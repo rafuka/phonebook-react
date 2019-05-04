@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUser, faUserPlus, faPhone, faHome } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faUserPlus, faPhone, faHome, faEnvelope, faKey } from '@fortawesome/free-solid-svg-icons'
 import PhoneBook from './components/phonebook';
 import Login from './components/login';
 import Signup from './components/signup';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import './global.scss';
 
-
-library.add(faUser, faUserPlus, faPhone, faHome);
+library.add(faUser, faUserPlus, faPhone, faHome, faEnvelope, faKey);
 
 class App extends Component {
   state = {

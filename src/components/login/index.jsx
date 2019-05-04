@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
 import './login.scss';
 
 class Login extends Component {
@@ -27,8 +28,6 @@ class Login extends Component {
         password: { value: password }
       } = this.state;
 
-      console.log(JSON.stringify({email, password}));
-      console.log('submitting login form...');
       let response = await fetch(`${process.env.REACT_APP_API_URL}/users/login`, {
         method: "POST",
         headers: {
@@ -41,8 +40,7 @@ class Login extends Component {
       });
 
       let jsonData = await response.json();
-      console.log('data', jsonData);
-      console.log(!jsonData.error);
+
       if (!jsonData.error) {
         localStorage.setItem('authToken', jsonData.token);
         await this.props.onAuthenticate(true)
@@ -70,10 +68,34 @@ class Login extends Component {
 
   render() { 
     return (
-      <form>
-        <input onChange={this.handleChange} name="email" type="email"/>
-        <input onChange={this.handleChange} name="password" type="password"/>
+      <form className="login-form">
+        <header className="login-form__header">
+          <Icon className="icon" icon="user" />
+          <h2>Log In to your account</h2>
+        </header>
+        <div className="login-form__body">
+        <div className="form-field">
+          <Icon className="icon" icon="envelope"/>
+          <p className="error-msg"></p>
+          <input
+            onChange={this.handleChange}
+            name="email"
+            type="email"
+            placeholder="email"
+          />
+        </div>
+        <div className="form-field">
+          <Icon className="icon" icon="key"/>
+          <p className="error-msg"></p>
+          <input
+            onChange={this.handleChange}
+            name="password"
+            type="password"
+            placeholder="password"
+          />
+        </div>
         <button onClick={this.submitForm} type="submit">Log In</button>
+        </div>
       </form>
     );
   }
