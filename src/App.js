@@ -1,31 +1,63 @@
 import React, { Component } from 'react';
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUser, faPhone, faHome } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faUserPlus, faPhone, faHome } from '@fortawesome/free-solid-svg-icons'
 import PhoneBook from './components/phonebook';
+import Login from './components/login';
+import Signup from './components/signup';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 
-library.add(faUser, faPhone, faHome);
 
-const CONTACTS_URL = 'http://www.mocky.io/v2/581335f71000004204abaf83';
+library.add(faUser, faUserPlus, faPhone, faHome);
 
 class App extends Component {
   state = {
     contacts: [],
     loading: true,
-    error: false
+    error: false,
+    isAuthenticated: !!localStorage.getItem('authToken')
+  }
+
+  onAuthentication = isAuth => {
+    this.setState({ isAuthenticated: isAuth });
   }
 
   async componentDidMount() {
-    try {
-      let jsonData = await fetch(CONTACTS_URL);
-      let data = await jsonData.json();
-      this.setState({
-        contacts: data.contacts,
-        loading: false
-      });
+    
+    if (this.state.isAuthenticated) {
+      const authToken = localStorage.getItem('authToken');
+
+      try {
+        let jsonData = await fetch(`${process.env.REACT_APP_API_URL}/contacts`, {
+          headers: {
+            "authorization": `Bearer ${authToken}`,
+          }
+        });
+
+        let data = await jsonData.json();
+
+        if (data.error) {
+          this.setState({
+            isAuthenticated: false,
+            loading: false
+          });
+        }
+        else {
+          this.setState({
+            contacts: data.contacts,
+            loading: false
+          });
+        }
+      }
+      catch(err) {
+        console.error(err);
+        this.setState({
+          error: err
+        });
+      }
     }
-    catch(err) {
+    else {
       this.setState({
-        error: err
+        loading: false
       });
     }
   }
@@ -34,12 +66,22 @@ class App extends Component {
     const { contacts, loading, error } = this.state;
     return (
       <main className="app">
-      {error
-      ? <div className="error">Woops! There's been an error.</div>
-      : loading
-      ? <div className="loading">Loading...</div>
-      : <PhoneBook contacts={contacts}/>
-      } 
+        <Router>
+        {loading
+        ? <div className="loading">Loading...</div>
+        : <Switch>  
+            <Route exact path="/login" render={() => 
+              this.state.isAuthenticated ? <Redirect to="/"/> : <Login onAuthenticate={this.onAuthentication}/>
+            }/>
+            <Route exact path="/signup" render={() => 
+              this.state.isAuthenticated ? <Redirect to="/"/> : <Signup onAuthenticate={this.onAuthentication}/>
+            }/>
+            <Route exact path="/" render={() =>
+              this.state.isAuthenticated ? <PhoneBook contacts={contacts}/> : <Redirect to="/login" />
+            }/>
+          </Switch>
+        } 
+        </Router>
       </main>
     );
   }

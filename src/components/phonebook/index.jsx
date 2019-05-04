@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome'
 import './phonebook.scss';
 
 class PhoneBook extends Component {
@@ -11,27 +11,29 @@ class PhoneBook extends Component {
     return (
       <div className="phonebook">
         <header className="phonebook__header">
-          <h2 className="phonebook__title">Contacts</h2>
+          <h2 className="phonebook__title">User's Phonebook</h2>
+          <button className="phonebook__add-user"><Icon className="icon" icon="user-plus" /></button>
         </header>
         
         <section className="phonebook__contacts">
-
-          <div className="scroller" onScroll={this.handleScroll}>
-          {contacts.map((contact, index) => (
+          {contacts.count > 0
+          ? contacts.map((contact, index) => (
             <div className="contact" key={index}>
               <p className="contact__name">
-                <FontAwesomeIcon className="icon" icon="user"/><span>{contact.name}</span>
+                <Icon className="icon" icon="user"/><span>{contact.name}</span>
               </p>
               <p className="contact__phone">
-                <FontAwesomeIcon className="icon" icon="phone"/><span>{contact.phone_number}</span>
+                <Icon className="icon" icon="phone"/><span>{contact.phone_number}</span>
               </p>
               <p className="contact__address">
-                <FontAwesomeIcon className="icon" icon="home"/><span>{contact.address}</span>
+                <Icon className="icon" icon="home"/><span>{contact.address}</span>
               </p>
             </div>
-          ))}   
-          </div>
-        
+          ))
+          : <div className="no-contacts">
+              <p>You have no contacts yet.</p>
+            </div>
+          }   
         </section>
       </div>
     );
