@@ -1,13 +1,22 @@
 import React, { Component } from 'react';
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUser, faUserPlus, faPhone, faHome, faEnvelope, faKey } from '@fortawesome/free-solid-svg-icons'
+import { library } from '@fortawesome/fontawesome-svg-core';
+import {
+  faUser,
+  faUserPlus,
+  faPhone,
+  faHome,
+  faEnvelope,
+  faKey,
+  faLock,
+  faIdCard
+} from '@fortawesome/free-solid-svg-icons';
 import PhoneBook from './components/phonebook';
-import Login from './components/login';
-import Signup from './components/signup';
+import CredentialsForm from './components/credentials-form';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import './global.scss';
 
-library.add(faUser, faUserPlus, faPhone, faHome, faEnvelope, faKey);
+library.add(faUser, faUserPlus, faPhone, faHome, faEnvelope, faKey, faLock, faIdCard);
 
 class App extends Component {
   state = {
@@ -63,23 +72,39 @@ class App extends Component {
   }
 
   render() {
-    const { contacts, loading, error } = this.state;
+    const { contacts, loading, isAuthenticated } = this.state;
     return (
       <main className="app">
         <Router>
         {loading
         ? <div className="loading">Loading...</div>
-        : <Switch>  
-            <Route exact path="/login" render={() => 
-              this.state.isAuthenticated ? <Redirect to="/"/> : <Login onAuthenticate={this.onAuthentication}/>
-            }/>
-            <Route exact path="/signup" render={() => 
-              this.state.isAuthenticated ? <Redirect to="/"/> : <Signup onAuthenticate={this.onAuthentication}/>
-            }/>
-            <Route exact path="/" render={() =>
-              this.state.isAuthenticated ? <PhoneBook contacts={contacts}/> : <Redirect to="/login" />
-            }/>
-          </Switch>
+        : <Route render={({ location }) => (
+            <TransitionGroup className={location.pathname === "/login" || location.pathname === "/signup" ? "form-wrapper" : ""}>
+              <CSSTransition
+                key={location.key}
+                timeout={1000}
+                classNames="fade"
+              >
+                <Switch location={location}> 
+                  <Route exact path="/login" render={() => 
+                    isAuthenticated
+                    ? <Redirect to="/"/>
+                    : <CredentialsForm onAuthenticate={this.onAuthentication}/>
+                  }/>
+                  <Route exact path="/signup" render={() => 
+                    isAuthenticated
+                    ? <Redirect to="/"/>
+                    : <CredentialsForm signup onAuthenticate={this.onAuthentication}/>
+                  }/>
+                  <Route exact path="/" render={() =>
+                    isAuthenticated
+                    ? <PhoneBook contacts={contacts}/>
+                    : <Redirect to="/login" />
+                  }/>
+                </Switch>
+              </CSSTransition>
+            </TransitionGroup>
+          )}/>
         } 
         </Router>
       </main>
