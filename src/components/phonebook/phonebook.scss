@@ -1,3 +1,10 @@
+.phonebook-wrapper {
+  margin: 0 auto;
+  max-width: 500px;
+  position: relative;
+  width: 90%;
+}
+
 .phonebook {
   align-items: center;
   background-color: white;
@@ -5,17 +12,19 @@
   box-shadow: 0px 3px 40px -13px rgba(0,0,0,0.9);
   display: flex;
   flex-direction: column;
-  margin: 0px auto;
+  margin: 40px auto;
   max-height: calc(100vh - 100px);
   max-width: 500px;
   overflow-x: hidden;
   overflow-y: auto;
+  position: absolute;
   width: 95%;
 
   &__header {
     align-items: center;
     background-color: #2e87d6;
     display: flex;
+    flex-shrink: 0;
     justify-content: space-between;
     margin: 0px;
     padding: 10px;
@@ -27,7 +36,7 @@
     }
   }
 
-  &__add-user {
+  &__add-contact-btn {
     appearance: none;
     border: none;
     background-color: rgba(255,255,255,0);
@@ -44,13 +53,28 @@
   }
 
   &__contacts {
-    min-height: 300px;
     overflow-y: auto;
+    width: 100%;
   }
 
   &__title {
     color: #fff;
     font-size: 1.8em;
+  }
+
+  &.fade-enter {
+    opacity: 0;
+    top: 150px;
+  }
+
+  &.fade-enter-active {
+    opacity: 1;
+    top: 0px;
+    transition: all 1s ease;
+  }
+
+  &.fade-exit-active {
+    display:none;
   }
 }
 
@@ -60,7 +84,8 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  padding: 15px;  
+  padding: 15px;
+  position: relative;
   transition: all .2s ease;
   width: 100%;
 
@@ -110,9 +135,52 @@
 
   &__address {
     font-size: .8em;
+    width: 100%;
 
     span {
       color: #999;
+    }
+  }
+
+  &__options {
+    background-color: rgba(255,255,255,.7);
+    bottom: 15px;
+    opacity: 0;
+    position: absolute;
+    right: 15px;
+    transition: opacity .3s ease;
+
+    span {
+      cursor: pointer;
+    }
+
+    .icon {
+      color: rgba(0,0,0,0.5);
+      font-size: 20px;
+    }
+  }
+
+  &:hover {
+    .contact__options {
+      opacity: 1;
+    }
+  }
+
+  &__delete {
+    margin-right: 15px;
+
+    &:hover {
+      .icon {
+        color: red;
+      }
+    }
+  }
+
+  &__edit {
+    &:hover{
+      .icon {
+        color: #2e87d6;
+      }
     }
   }
 }
@@ -147,4 +215,53 @@
   flex-direction: column;
   justify-content: center;
   min-height: 300px;
+}
+
+.add-contact {
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  height: 0px;
+  overflow: hidden;
+  padding: 0px 20px;
+  transition: height .3s ease;
+
+  .form-field {
+    flex-basis: 50%;
+  }
+
+  &__name {
+    margin-top: 20px;
+    padding-right: 5px;
+  }
+
+  &__number {
+    margin-top: 20px;
+    padding-left: 5px;
+  }
+
+  &__address {
+    flex-basis: 100%!important;
+    margin-top: 10px;
+  }
+
+  &__options {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+
+    button {
+      &:last-child {
+        margin-left: 10px;
+      }
+    }
+  }
+
+  &.open {
+    height: 206px;
+  }
 }

@@ -8,7 +8,11 @@ import {
   faEnvelope,
   faKey,
   faLock,
-  faIdCard
+  faIdCard,
+  faPlus,
+  faTimes,
+  faUserSlash,
+  faUserEdit,
 } from '@fortawesome/free-solid-svg-icons';
 import PhoneBook from './components/phonebook';
 import CredentialsForm from './components/credentials-form';
@@ -16,7 +20,20 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-d
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import './global.scss';
 
-library.add(faUser, faUserPlus, faPhone, faHome, faEnvelope, faKey, faLock, faIdCard);
+library.add(
+  faUser,
+  faUserPlus,
+  faPhone,
+  faHome,
+  faEnvelope,
+  faKey,
+  faLock,
+  faIdCard,
+  faPlus,
+  faTimes,
+  faUserSlash,
+  faUserEdit
+);
 
 class App extends Component {
   state = {
@@ -78,8 +95,8 @@ class App extends Component {
         <Router>
         {loading
         ? <div className="loading">Loading...</div>
-        : <Route render={({ location }) => (
-            <TransitionGroup className={location.pathname === "/login" || location.pathname === "/signup" ? "form-wrapper" : ""}>
+        : <Route render={({ location, history }) => (
+            <TransitionGroup className={location.pathname === "/login" || location.pathname === "/signup" ? "form-wrapper" : "phonebook-wrapper"}>
               <CSSTransition
                 key={location.key}
                 timeout={1000}
@@ -88,18 +105,18 @@ class App extends Component {
                 <Switch location={location}> 
                   <Route exact path="/login" render={() => 
                     isAuthenticated
-                    ? <Redirect to="/"/>
+                    ? <RedirectFix action={history.action} to="/" />
                     : <CredentialsForm onAuthenticate={this.onAuthentication}/>
                   }/>
                   <Route exact path="/signup" render={() => 
                     isAuthenticated
-                    ? <Redirect to="/"/>
+                    ? <RedirectFix action={history.action} to="/" />
                     : <CredentialsForm signup onAuthenticate={this.onAuthentication}/>
                   }/>
                   <Route exact path="/" render={() =>
                     isAuthenticated
                     ? <PhoneBook contacts={contacts}/>
-                    : <Redirect to="/login" />
+                    : <RedirectFix action={history.action} to="/login" />
                   }/>
                 </Switch>
               </CSSTransition>
@@ -111,5 +128,12 @@ class App extends Component {
     );
   }
 }
+
+/*
+* Code taken from https://github.com/reactjs/react-transition-group/issues/296
+* to solve issue with redirection within CSSTransition component
+*/
+const RedirectFix = ({ action, to }) =>
+  action === 'REPLACE' ? null : <Redirect to={to} />
 
 export default App;

@@ -45,9 +45,6 @@ class CredentialsForm extends Component {
       const fetchUrl = `${process.env.REACT_APP_API_URL}/users/${signup ? "signup" : "login"}`;
       const reqData = signup ? JSON.stringify({name, email, password}) : JSON.stringify({email, password});
 
-      console.log('fetch url', fetchUrl);
-      console.log('data', reqData);
-
       const response = await fetch(fetchUrl, {
         method: "POST",
         headers: {
@@ -57,7 +54,6 @@ class CredentialsForm extends Component {
       });
 
       const jsonData = await response.json();
-      console.log('json data', jsonData);
 
       if (!jsonData.error) {
         localStorage.setItem('authToken', jsonData.token);
