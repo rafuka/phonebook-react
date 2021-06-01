@@ -20,7 +20,15 @@ import {
 } from './components';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import formStyles from './components/CredentialsForm/CredentialsForm.module.scss';
 import './global.scss';
+
+const transitionClassNames = {
+    enterActive: formStyles.enterActive,
+    enter: formStyles.enter,
+    exitActive: formStyles.exitActive,
+    exit: formStyles.exit
+};
 
 library.add(
     faUser,
@@ -105,8 +113,9 @@ class App extends Component {
                                     <CSSTransition
                                         key={location.key}
                                         timeout={1000}
-                                        classNames="fade"
+                                        classNames={transitionClassNames}
                                     >
+                                       
                                         <Switch location={location}>
                                             <Route exact path="/login" render={() =>
                                                 isAuthenticated
