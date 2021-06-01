@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome'
-import './phonebook.scss';
+import './PhoneBook.scss';
 
 class PhoneBook extends Component {
   state = {
@@ -13,7 +13,6 @@ class PhoneBook extends Component {
   };
 
   toggleAddContact = e => {
-    console.log('bam');
     this.state.addContactBlock === 'closed'
     ? this.setState({ addContactBlock: 'open' })
     : this.setState({ addContactBlock: 'closed' });

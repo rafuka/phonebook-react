@@ -8,23 +8,25 @@
   box-sizing: border-box;
   font-family: 'Raleway', sans-serif;
   font-weight: normal;
-  margin: 0px;
+  margin: 0;
   outline: none;
-  padding: 0px;
+  padding: 0;
   text-decoration: none;
 }
-
 
 .app {
   position: relative;
 }
 
 .form-wrapper {
+  display: flex;
+  justify-content: center;
   height: 100vh;
-  margin: 0 auto;
+  margin: 0;
   overflow: hidden;
+  padding-top: 90px;
   position: relative;
-  width: 340px;
+  width: 100%;
 }
 
 .form-field {

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
-import './credentials-form.scss';
+import './CredentialsForm.scss';
 
 class CredentialsForm extends Component {
   state = {
@@ -43,26 +43,34 @@ class CredentialsForm extends Component {
       const { signup } = this.props;
 
       const fetchUrl = `${process.env.REACT_APP_API_URL}/users/${signup ? "signup" : "login"}`;
-      const reqData = signup ? JSON.stringify({name, email, password}) : JSON.stringify({email, password});
+      const reqData = signup
+        ? JSON.stringify({name, email, password})
+        : JSON.stringify({email, password});
 
-      const response = await fetch(fetchUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: reqData
-      });
-
-      const jsonData = await response.json();
-
-      if (!jsonData.error) {
-        localStorage.setItem('authToken', jsonData.token);
-        await this.props.onAuthenticate(true);
-        this.props.history.push("/");
-      }
-      else {
+      try {
+        const response = await fetch(fetchUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: reqData
+        });
+  
+        const jsonData = await response.json();
+  
+        if (!jsonData.error) {
+          localStorage.setItem('authToken', jsonData.token);
+          await this.props.onAuthenticate(true);
+          this.props.history.push("/");
+        }
+        else {
+          this.setState({
+            error: jsonData.error
+          });
+        }
+      } catch(err) {
         this.setState({
-          error: jsonData.error
+          error: err
         });
       }
     }
@@ -82,6 +90,7 @@ class CredentialsForm extends Component {
 
   render() {
     const { signup } = this.props;
+
     return (
       <form className="credentials-form">
         <header className="credentials-form__header">
